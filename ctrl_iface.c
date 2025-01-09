@@ -505,7 +505,7 @@ void ctrl_iface_deinit(struct clif_data *clifd)
 	struct ctrl_dst *dst, *prev;
 
 	if (clifd->ctrl_sock > -1) {
-		eloop_unregister_read_sock(clifd->ctrl_sock);
+		eloop_unregister_sock(clifd->ctrl_sock);
 		close(clifd->ctrl_sock);
 		clifd->ctrl_sock = -1;
 	}

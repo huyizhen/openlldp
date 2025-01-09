@@ -23,11 +23,13 @@
 #ifndef ELOOP_H
 #define ELOOP_H
 
+#include <poll.h>
+
 /**
  * ELOOP_ALL_CTX - eloop_cancel_timeout() magic number to match all timeouts
  */
 #define ELOOP_ALL_CTX (void *) -1
-
+ 
 /**
  * eloop_event_type - eloop socket event type for eloop_register_sock()
  * @EVENT_TYPE_READ: Socket has data available for reading
@@ -100,21 +102,11 @@ int eloop_init(void *user_data);
  * for the same event.
  */
 int eloop_register_read_sock(int sock, eloop_sock_handler handler,
-			     void *eloop_data, void *user_data);
-
-/**
- * eloop_unregister_read_sock - Unregister handler for read events
- * @sock: File descriptor number for the socket
- *
- * Unregister a read socket notifier that was previously registered with
- * eloop_register_read_sock().
- */
-void eloop_unregister_read_sock(int sock);
+							 void *eloop_data, void *user_data);
 
 /**
  * eloop_register_sock - Register handler for socket events
- * @sock: File descriptor number for the socket
- * @type: Type of event to wait for
+ * @pfd: Pollfd for the socket
  * @handler: Callback function to be called when the event is triggered
  * @eloop_data: Callback context data (eloop_ctx)
  * @user_data: Callback context data (sock_ctx)
@@ -126,19 +118,18 @@ void eloop_unregister_read_sock(int sock);
  * having processed it in order to avoid eloop from calling the handler again
  * for the same event.
  */
-int eloop_register_sock(int sock, eloop_event_type type,
+int eloop_register_sock(struct pollfd pfd, 
 			eloop_sock_handler handler,
 			void *eloop_data, void *user_data);
 
 /**
  * eloop_unregister_sock - Unregister handler for socket events
  * @sock: File descriptor number for the socket
- * @type: Type of event for which sock was registered
  *
  * Unregister a socket event notifier that was previously registered with
  * eloop_register_sock().
  */
-void eloop_unregister_sock(int sock, eloop_event_type type);
+void eloop_unregister_sock(int sock);
 
 /**
  * eloop_register_event - Register handler for generic events

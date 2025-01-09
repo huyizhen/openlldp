@@ -278,7 +278,7 @@ void l2_packet_deinit(struct l2_packet_data *l2)
 		return;
 
 	if (l2->fd >= 0) {
-		eloop_unregister_read_sock(l2->fd);
+		eloop_unregister_sock(l2->fd);
 		close(l2->fd);
 	}
 		
