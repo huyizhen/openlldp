@@ -175,6 +175,17 @@ static void eloop_sock_table_remove_sock(struct eloop_sock_table *table,
 }
 
 
+static inline void warn_too_many_fds()
+{
+	static bool warned = false;
+
+	if (!warned) {
+		fprintf(stderr, "unable to handle more than %d file descriptors\n", FD_SETSIZE);
+		fprintf(stderr, "too many interfaces being watched\n");
+		warned = true;
+	}
+}
+
 static void eloop_sock_table_set_fds(struct eloop_sock_table *table,
 				     struct pollfd *fds)
 {
